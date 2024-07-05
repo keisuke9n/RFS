@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refeeding Syndrome Risk Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+        }
+        h1 {
+            font-size: 24px;
+            color: #1f2937;
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin: 15px 0 5px;
+            font-size: 16px;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #3b82f6;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background: #e5e7eb;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 16px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Refeeding Syndrome Risk Calculator</h1>
+        <label for="bmi">BMI</label>
+        <select id="bmi">
+            <option value="">選択してください</option>
+            <option value="under16">16未満</option>
+            <option value="under18.5">16以上18.5未満</option>
+            <option value="over18.5">18.5以上</option>
+        </select>
+        
+        <label for="intake">期間中の経口摂取減少日数または絶食日数 (日)</label>
+        <select id="intake">
+            <option value="">選択してください</option>
+            <option value="0">0〜4日</option>
+            <option value="5">5〜9日</option>
+            <option value="10">10日以上</option>
+        </select>
+        
+        <label for="weightLoss">過去3〜6ヶ月の体重減少 (%)</label>
+        <select id="weightLoss">
+            <option value="">選択してください</option>
+            <option value="0">0〜9%</option>
+            <option value="10">10〜14%</option>
+            <option value="15">15%以上</option>
+        </select>
+        
+        <label for="bloodLevels">栄養療法開始前の血清P, Mg, K値</label>
+        <select id="bloodLevels">
+            <option value="">選択してください</option>
+            <option value="normal">正常</option>
+            <option value="low">低P, 低Mg, 低K</option>
+        </select>
+        
+        <label for="medication">アルコールの乱用、インスリン、化学療法、制酸剤、利尿薬の投与</label>
+        <select id="medication">
+            <option value="">選択してください</option>
+            <option value="yes">はい</option>
+            <option value="no">いいえ</option>
+        </select>
+        
+        <button onclick="calculateRisk()">リスク計算</button>
+        
+        <div id="result" class="result"></div>
+        <div class="footer">出典: NICEガイドライン(2018)</div>
+    </div>
+
+    <script>
+        function calculateRisk() {
+            const bmi = document.getElementById('bmi').value;
+            const intake = document.getElementById('intake').value;
+            const weightLoss = document.getElementById('weightLoss').value;
+            const bloodLevels = document.getElementById('bloodLevels').value;
+            const medication = document.getElementById('medication').value;
+
+            let highRisk = false;
+            let majorCriteria = 0;
+            let minorCriteria = 0;
+
+            // Major criteria
+            if (bmi === "under16") majorCriteria++;
+            if (intake === "10") majorCriteria++;
+            if (weightLoss === "15") majorCriteria++;
+            if (bloodLevels === "low") majorCriteria++;
+
+            // Minor criteria
+            if (bmi === "under18.5") minorCriteria++;
+            if (intake === "5") minorCriteria++;
+            if (weightLoss === "10") minorCriteria++;
+            if (medication === "yes") minorCriteria++;
+
+            if (majorCriteria >= 1 || minorCriteria >= 2) {
+                highRisk = true;
+            }
+
+            let riskLevel = highRisk ? "高リスク" : "低リスク";
+
+            document.getElementById('result').innerText = `リフィーディング症候群リスク: ${riskLevel}\n大基準: ${majorCriteria}個\n小基準: ${minorCriteria}個`;
+        }
+    </script>
+</body>
+</html>
